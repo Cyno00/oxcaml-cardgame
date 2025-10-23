@@ -1,0 +1,5 @@
+(executable
+ (name connect_four_ai_cli)
+ (libraries core tictactoe_logic_library)
+ (preprocess
+  (pps ppx_jane)))
