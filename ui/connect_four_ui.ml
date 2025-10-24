@@ -91,44 +91,41 @@ let connect_four_board ~(game_state : Game_state.t) ~set_game_state =
       ]
   in
 
-  let render_column column =
+  let render_column_button column =
     let can_play =
       (not is_game_over)
       && (match Game_state.For_testing.find_lowest_empty_row game_state column with
          | Some _ -> true
          | None -> false)
     in
+    let button_text = Int.to_string column in
     let maybe_clickable_attr =
       if can_play
       then
-        Vdom.Attr.(
-          class_ "column-clickable"
-          @ on_click (fun _ ->
-            match Game_state.make_move game_state { Move.column } with
-            | Error _ -> Vdom.Effect.Ignore
-            | Ok new_game_state -> set_game_state new_game_state))
-      else Vdom.Attr.empty
+        Vdom.Attr.on_click (fun _ ->
+          match Game_state.make_move game_state { Move.column } with
+          | Error _ -> Vdom.Effect.Ignore
+          | Ok new_game_state -> set_game_state new_game_state)
+      else Vdom.Attr.create "disabled" "disabled"
     in
-    Vdom.Node.div
+    Vdom.Node.button
       ~attrs:
-        [ Vdom.Attr.class_ "column-header"
-        ; Vdom.Attr.style
-            Css_gen.(
-              left (`Percent (Percent.of_percentage (Int.to_float column *. 100.0 /. 7.0)))
-              @> width (`Percent (Percent.of_percentage (100.0 /. 7.0))))
+        [ Vdom.Attr.class_ "column-button"
         ; maybe_clickable_attr
         ]
-      []
+      [ Vdom.Node.text button_text ]
   in
 
   Vdom.Node.div
     ~attrs:[ Vdom.Attr.class_ "board-container" ]
-    [ Vdom.Node.div
+    [ (* Column buttons above the board *)
+      Vdom.Node.div
+        ~attrs:[ Vdom.Attr.class_ "column-buttons" ]
+        (List.init 7 ~f:render_column_button)
+    ; (* The game board *)
+      Vdom.Node.div
         ~attrs:[ Vdom.Attr.class_ "board" ]
-        ((* Column headers for clicking *)
-         List.init 7 ~f:render_column
-         @ (* All cells *)
-         List.concat_map (List.init 6 ~f:Fn.id) ~f:(fun row ->
+        (List.concat_map (List.init 6 ~f:Fn.id) ~f:(fun row ->
            List.init 7 ~f:(fun column -> render_cell ~row ~column)))
     ]
 ;;

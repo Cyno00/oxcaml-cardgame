@@ -47,16 +47,48 @@ h1 {
 
 /* Board container */
 .board-container {
-  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
   width: min(700px, 90vw);
-  aspect-ratio: 7 / 6;
+}
+
+/* Column buttons container */
+.column-buttons {
+  display: flex;
+  gap: 5px;
+  justify-content: center;
+}
+
+/* Individual column button */
+.column-button {
+  flex: 1;
+  padding: 10px;
+  font-size: 1.2em;
+  font-weight: bold;
+  background: #0066CC;
+  color: white;
+  border: 2px solid #004C99;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.column-button:hover:not(:disabled) {
+  background: #0052A3;
+}
+
+.column-button:disabled {
+  background: #999;
+  border-color: #777;
+  cursor: not-allowed;
+  opacity: 0.5;
 }
 
 /* The board itself */
 .board {
   position: relative;
   width: 100%;
-  height: 100%;
+  aspect-ratio: 7 / 6;
   background: #0066CC;
   border-radius: 10px;
   padding: 10px;
@@ -83,18 +115,6 @@ h1 {
   display: flex;
   justify-content: center;
   align-items: center;
-}
-
-/* Column headers (clickable areas) */
-.column-header {
-  position: absolute;
-  top: 0;
-  height: 100%;
-  cursor: pointer;
-}
-
-.column-clickable {
-  cursor: pointer;
 }
 
 /* SVG sizing */
